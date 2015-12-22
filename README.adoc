@@ -17,4 +17,4 @@ Installation:
 
 Copy and edit example.conf.json - then configure your ~/.config/i3/config:
 
-    status_command <path>/nimi3status <path>/<any_name>.conf.json
+    status_command ~/.nimble/bin/nimi3status <path>/<any_name>.conf.json
