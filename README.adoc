@@ -1,5 +1,5 @@
 
-Nim i3status is a simple status bar for i3 implemented in Nim.
+===== Nim i3status is a simple status bar for i3 implemented in Nim.
 
 It's meant to be lightweight on your CPU and consume less power than other status bars.
 
@@ -7,6 +7,7 @@ Supported monitors: Clock, Battery, CPU, Disk space, Memory, Network status and 
 
 Supported controls: Player control, Pomodoro method, RedShift
 
+image:https://raw.githubusercontent.com/FedericoCeratto/nimi3status/screenshot/shot.png[Screenshot]
 
 Installation:
 
