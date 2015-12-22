@@ -15,5 +15,6 @@ README.adoc
 
 [Deps]
 Requires: """
+colorsys >= 0.1
 nim >= 0.12.0
 """
