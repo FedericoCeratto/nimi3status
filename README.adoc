@@ -1,0 +1,17 @@
+
+Nim i3status is a simple status bar for i3 implemented in Nim.
+
+It's meant to be lightweight on your CPU and consume less power than other status bars.
+
+Supported monitors: Clock, Battery, CPU, Disk space, Memory, Network status and traffic, Swap, Temperature
+
+Supported controls: Player control, Pomodoro method, RedShift
+
+Installation:
+
+    $ sudo apt-get install nim
+    $ nimble install nimi3status
+
+Configure your ~/.config/i3/config:
+
+    status_command <path>/nimi3status <path>/<any_name>.conf.json
