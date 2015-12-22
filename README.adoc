@@ -7,11 +7,13 @@ Supported monitors: Clock, Battery, CPU, Disk space, Memory, Network status and 
 
 Supported controls: Player control, Pomodoro method, RedShift
 
+
 Installation:
 
     $ sudo apt-get install nim
+    $ # intall nimble
     $ nimble install nimi3status
 
-Configure your ~/.config/i3/config:
+Copy and edit example.conf.json - then configure your ~/.config/i3/config:
 
     status_command <path>/nimi3status <path>/<any_name>.conf.json
