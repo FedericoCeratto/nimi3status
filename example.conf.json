@@ -1,0 +1,89 @@
+[
+    {
+        "name": "pomodoro",
+        "type": "Pomodoro",
+        "end_sound_fname": "/filename.wav",
+        "end_notification_msg": "Break time!",
+        "start_notification_msg": "Start!",
+    },
+    {
+        "name": "cpu",
+        "type": "CPU",
+        "symbol": "cpu",
+    },
+    {
+        "name": "fds1",
+        "type": "FreeDiskSpace",
+        "symbol": "⌂",
+        "path": "/home/yourhome",
+    },
+    {
+        "name": "fds2",
+        "type": "FreeDiskSpace",
+        "symbol": "/",
+        "path": "/",
+    },
+    {
+        "name": "tun0",
+        "type": "NetworkTraffic",
+        "iface": "tun0",
+        "when_down": "lvpn down",
+        "when_down_color": "#ee0000",
+        "when_up": "lvpn",
+        "max_bw": 100000,
+    },
+    {
+        "name": "tun1",
+        "type": "NetworkTraffic",
+        "iface": "tun1",
+        "when_down": "hpvpn down",
+        "when_down_color": "#ee0000",
+        "when_up": "hpvpn",
+        "max_bw": 100000,
+    },
+    {
+        "name": "tun2",
+        "type": "NetworkTraffic",
+        "iface": "tun2",
+        "when_down": "fcvpn down",
+        "when_down_color": "#ee0000",
+        "when_up": "fcvpn",
+        "max_bw": 100000,
+    },
+    {
+        "name": "network",
+        "type": "Network",
+    },
+    {
+        "name": "mem",
+        "type": "Memory",
+    },
+    {
+        "name": "swap",
+        "type": "Swap",
+        "label": "swap",
+    },
+    {
+        "name": "bat",
+        "type": "Battery",
+        "path": "BAT0",
+    },
+    {
+        "name": "redshift",
+        "type": "RedShift",
+    },
+    {
+        "name": "temp",
+        "type": "Temperature",
+        "path": "/sys/class/thermal/thermal_zone0/temp",
+    },
+    {
+        "name": "player",
+        "type": "PlayerControl",
+        "volume_tick": 1,
+    },
+    {
+        "name": "clock",
+        "type": "Clock",
+    },
+]
