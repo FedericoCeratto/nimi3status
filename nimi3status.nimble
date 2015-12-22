@@ -5,6 +5,8 @@ author        = "Federico Ceratto"
 description   = """Lightweight i3 status bar."""
 license       = "GPLv3"
 
+bin           = "nimi3status"
+
 InstallFiles = """
 LICENSE
 example.conf.json
