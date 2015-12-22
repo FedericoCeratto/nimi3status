@@ -5,13 +5,10 @@ author        = "Federico Ceratto"
 description   = """Lightweight i3 status bar."""
 license       = "GPLv3"
 
-installDirs = """
-"""
-
 InstallFiles = """
 LICENSE
+example.conf.json
 README.adoc
-nimi3status.nim
 """
 
 [Deps]
