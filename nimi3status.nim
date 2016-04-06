@@ -501,6 +501,8 @@ method process_input(self: RedShift, event: JsonNode) =
   case event.button
   of MouseButton.WheelUp:
     self.brightness *= 1 + self.tick
+    if self.brightness > 1.0:
+      self.brightness = 1.0
   of MouseButton.WheelDown:
     self.brightness *= 1 - self.tick
   of MouseButton.Left:
