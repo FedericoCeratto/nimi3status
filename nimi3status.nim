@@ -126,7 +126,7 @@ method update(self: Pomodoro) =
 
   case self.status:
   of PomodoroStatus.WaitingToStart:
-    barblock = "[----]"
+    barblock = "[-----]"
     self.color = ""
 
   of PomodoroStatus.Running:
@@ -141,7 +141,7 @@ method update(self: Pomodoro) =
     else:
       let remaining_time = self.endtime - epochTime()
       let perc = remaining_time / self.time_window.float
-      barblock = generate_bar(perc, 4)
+      barblock = generate_bar(perc, 5)
       self.color = col(150, 50, 50)
 
   of PomodoroStatus.EndOfRun:
