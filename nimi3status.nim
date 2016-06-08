@@ -554,12 +554,14 @@ when isMainModule:
     echo "Please supply a config file name."
     quit(1)
 
-  var conf: JsonNode
-  try:
-    conf = parseFile(argv[0])
-  except:
-    echo "Unable to parse config file: ", getCurrentExceptionMsg()
-    quit(1)
+  let conf: JsonNode =
+    try:
+      parseFile(argv[0])
+    except:
+      echo "Unable to parse config file: ", getCurrentExceptionMsg()
+      quit(1)
+      nil
+
 
   info("starting")
   echo("""{"click_events": true, "version": 1}""")
