@@ -12,10 +12,10 @@ import strutils
 import times
 
 from math import sum
-from osproc import startProcess, execCmdEx
+from osproc import startProcess, execCmdEx, Process, peekExitCode, waitForExit
 from posix import statvfs, Statvfs
 from readline_timeout import readLine
-from sequtils import mapIt, map, zip
+from sequtils import mapIt, map, zip, keepIf
 from unicode import runeLen
 
 from colorsys import hlsToRgb
@@ -29,6 +29,19 @@ const
   aplay_binpath = "/usr/bin/aplay"
   amixer_binpath = "/usr/bin/amixer"
   redshift_binpath = "/usr/bin/redshift"
+
+type ProcessPool = seq[Process]
+
+var process_pool: ProcessPool = @[]
+
+proc remove_zombie_processes() =
+  keepIf process_pool,
+    proc(p: Process): bool =
+      if p.peekExitCode() == -1:
+        true  # still running
+      else:
+        discard p.waitForExit()
+        false
 
 type MouseButton {.pure.} = enum Unknown, Left, Middle, Right, WheelUp,
   WheelDown, WheelLeft, WheelRight
@@ -60,7 +73,7 @@ proc generate_bar(perc: float, width: int): string =
   result = "[$#]" % result
 
 proc send_notification(msg: string) =
-    discard startProcess(notify_send_binpath, ".", [msg])
+    process_pool.add startProcess(notify_send_binpath, ".", [msg])
 
 # Module
 
@@ -117,7 +130,7 @@ proc notify(self: Pomodoro, msg_name: string) =
 
 proc play_sound(self: Pomodoro, snd_name: string) =
   if self.conf.hasKey(snd_name):
-    discard startProcess(aplay_binpath, ".", ["-N", self.conf[snd_name].str])
+    process_pool.add startProcess(aplay_binpath, ".", ["-N", self.conf[snd_name].str])
 
 method update(self: Pomodoro) =
   var
@@ -338,7 +351,7 @@ method process_input(self: PlayerControl, event: JsonNode) =
   else:
     return
 
-  discard startProcess(amixer_binpath, ".", ["-q", "sset", "Master", delta])
+  process_pool.add startProcess(amixer_binpath, ".", ["-q", "sset", "Master", delta])
 
 
 # Network
@@ -493,7 +506,7 @@ method update(self: RedShift) =
 
 proc set_screen(self: RedShift) =
   ## Update screen brightness and temperature
-  discard startProcess(redshift_binpath, ".", ["-O", $self.temperature.int, "-b", $self.brightness])
+  process_pool.add startProcess(redshift_binpath, ".", ["-O", $self.temperature.int, "-b", $self.brightness])
 
 method process_input(self: RedShift, event: JsonNode) =
   ## Update brightness and temperature on mouse click / wheel movement
@@ -560,6 +573,10 @@ when isMainModule:
     var inp = stdin.readLine(timeout=1000)
     if inp == nil:
       # Run update on every module every second
+      try:
+        remove_zombie_processes()
+      except:
+        error getCurrentExceptionMsg()
       for m in modules:
         m.update()
 
