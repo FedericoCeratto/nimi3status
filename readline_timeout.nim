@@ -4,7 +4,7 @@
 
 from posix import Timeval, select, TFdSet, FD_SET, FD_ZERO
 
-proc timeValFromMilliseconds(timeout): Timeval =
+proc timeValFromMilliseconds(timeout: int): Timeval =
   let seconds = timeout div 1000
   result.tv_sec = seconds.int32
   result.tv_usec = ((timeout - seconds * 1000) * 1000).int32
