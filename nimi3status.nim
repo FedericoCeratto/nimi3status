@@ -253,7 +253,7 @@ method update(self: CPU) =
     # irq: Time spent servicing interrupts.
     # softirq: Time spent servicing soft-interrupts.
     # steal, guest: Used in virtualization setups.
-    let new_l = line.split()[1..5].map(parseInt)
+    let new_l = line.splitWhitespace()[1..5].map(parseInt)
     if self.load_values.len == 0:
       self.load_values = new_l
       return
@@ -323,7 +323,7 @@ proc get_volume(self: PlayerControl): float =
 
   try:
     let o = execCmdEx(amixer_binpath & " sget Master")[0].splitlines()
-    let chunks = o[o.len-2].strip().split()
+    let chunks = o[o.len-2].strip().splitWhitespace()
     let vol_block = chunks[chunks.len-2]  # example: [61%]
     doAssert vol_block.startswith("[")
     doAssert vol_block.endswith("%]")
@@ -375,7 +375,7 @@ method update(self: Network) =
 
   for line in lines("/proc/net/wireless"):
     if line.strip.startswith("wlan"):
-      let quality = line.split[2]
+      let quality = line.splitWhitespace[2]
       self.full_text = "$# $#" % [essid, quality]
 
 
@@ -390,9 +390,9 @@ method update(self: Memory) =
   var total, used: int
   for line in lines("/sys/devices/system/node/node0/meminfo"):
     if line.contains "MemTotal":
-      total = line.split()[3].parseInt
+      total = line.splitWhitespace()[3].parseInt
     if line.contains "MemUsed":
-      used = line.split()[3].parseInt
+      used = line.splitWhitespace()[3].parseInt
 
   let perc = used.float / total.float
   self.full_text = generate_bar(perc, 5)
@@ -412,9 +412,9 @@ method update(self: Swap) =
   for line in lines("/proc/meminfo"):
     # SwapTotal:        975868 kB
     if line.startswith("SwapTotal"):
-      total = line.split()[1].parseInt
+      total = line.splitWhitespace()[1].parseInt
     elif line.startswith("SwapFree"):
-      free = line.split()[1].parseInt
+      free = line.splitWhitespace()[1].parseInt
 
   let perc = (total.float - free.float) / total.float
   self.full_text = "$# $#" % [self.name, generate_bar(perc, 5)]
