@@ -52,7 +52,7 @@ proc button(event: JsonNode): MouseButton =
 
 proc col(h, s, l: int): string =
   ## Generate color from HSL
-  let rgb = hlsToRgb(h.float / 360, l.float / 100, s.float / 100)
+  let rgb = hlsToRgb(@[h.float / 360, l.float / 100, s.float / 100])
   return "#$#$#$#" % rgb.mapit(string, int(it * 256).toHex(2))
 
 proc generate_bar(perc: float, width: int): string =
@@ -96,11 +96,13 @@ proc should_update(self: Module): bool =
 
   return false
 
-method update(self: Module) =
-  discard
+{.push base.}
 
-method process_input(self: Module, event: JsonNode) =
-  discard
+method update(self: Module) = discard
+
+method process_input(self: Module, event: JsonNode) = discard
+
+{.pop.}
 
 # Pomodoro
 
