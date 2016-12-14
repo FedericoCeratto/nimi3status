@@ -4,12 +4,13 @@
 # Released under GPLv3, see LICENSE file
 #
 
-import json
-import logging
-import marshal
-import os
-import strutils
-import times
+import asyncdispatch,
+  json,
+  logging,
+  marshal,
+  os,
+  strutils,
+  times
 
 from math import sum
 from osproc import startProcess, execCmdEx, Process, peekExitCode, waitForExit
