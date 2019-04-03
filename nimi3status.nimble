@@ -1,6 +1,6 @@
 [Package]
 name          = "nimi3status"
-version       = "0.0.1"
+version       = "0.2.0"
 author        = "Federico Ceratto"
 description   = """Lightweight i3 status bar."""
 license       = "GPLv3"
