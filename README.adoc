@@ -1,5 +1,9 @@
 
-===== Nim i3status is a simple status bar for i3 implemented in Nim.
+=== Nim i3status is a simple status bar for i3 implemented in Nim.
+
+image:https://img.shields.io/badge/status-beta-orange.svg[badge]
+image:https://img.shields.io/github/tag/FedericoCeratto/nimi3status.svg[tags]
+image:https://img.shields.io/badge/License-GPL%20v3-blue.svg[License]
 
 It's meant to be lightweight on your CPU and consume less power than other status bars.
 
