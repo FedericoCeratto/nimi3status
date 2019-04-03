@@ -49,12 +49,13 @@ type MouseButton {.pure.} = enum Unknown, Left, Middle, Right, WheelUp,
 
 
 proc button(event: JsonNode): MouseButton =
-  MouseButton(event["button"].getNum.int)
+  MouseButton(event["button"].getInt)
 
 proc col(h, s, l: int): string =
   ## Generate color from HSL
   let rgb = hlsToRgb(@[h.float / 360, l.float / 100, s.float / 100])
-  return "#$#$#$#" % rgb.mapit(string, int(it * 256).toHex(2))
+  return "#$#$#$#" % rgb.mapIt(int(it * 256).toHex(2))
+
 
 proc generate_bar(perc: float, width: int): string =
   ## Generate text bar
@@ -197,8 +198,7 @@ proc newClock(c: JsonNode): Clock =
   Clock(name: "clock", color: "")
 
 method update(self: Clock) =
-  let timeinfo: TimeInfo = getTime().getLocalTime()
-  self.full_text = timeinfo.format("yyyy-MM-dd HH:mm:ss")
+  self.full_text = now().format("yyyy-MM-dd HH:mm:ss")
 
 method process_input(pomodoro: Pomodoro, j: JsonNode) =
   # Process input
@@ -224,7 +224,7 @@ proc newFreeDiskSpace(c: JsonNode): FreeDiskSpace =
 method update(self: FreeDiskSpace) =
   var sfs: Statvfs
   discard statvfs(self.path.cstring, sfs)
-  let free = sfs.f_frsize * sfs.f_blocks / 1073741824
+  let free = sfs.f_frsize.int * sfs.f_blocks.int / 1073741824
   self.full_text = "$# $# GB" % [self.symbol, $free.int]
 
 
@@ -258,7 +258,7 @@ method update(self: CPU) =
       self.load_values = new_l
       return
 
-    let deltas = zip(new_l, self.load_values).mapIt(int, it[0] - it[1])
+    let deltas = zip(new_l, self.load_values).mapIt(it[0] - it[1])
     let total = deltas[0..3].sum()
     let cpu_load = float(total - deltas[3]) / float(total)
     self.full_text = "$# $#" % [self.symbol, generate_bar(cpu_load, 2)]
@@ -308,7 +308,7 @@ type PlayerControl = ref object of Module
 
 proc newPlayerControl(c: JsonNode): PlayerControl =
   result = PlayerControl(name: c["name"].str, color: "", full_text: "▸")
-  result.volume_tick = c["volume_tick"].getNum.int
+  result.volume_tick = c["volume_tick"].getInt
 
 method update(self: PlayerControl) =
   discard
@@ -456,7 +456,7 @@ proc newNetworkTraffic(c: JsonNode): NetworkTraffic =
     iface_name: c["iface"].str,
     rx_pkts: 0,
     rtx_pkts: 0,
-    max_bw: c["max_bw"].getNum.int
+    max_bw: c["max_bw"].getInt
   )
   result.when_not_found_color =
     if c.hasKey("when_down_color"):
@@ -576,7 +576,7 @@ when isMainModule:
   var skipped_initial_brace = false
   while true:
     var inp = stdin.readLine(timeout=1000)
-    if inp == nil:
+    if inp == "":
       # Run update on every module every second
       try:
         remove_zombie_processes()
@@ -609,7 +609,7 @@ when isMainModule:
         error("unexpected input: '$#'" % inp)
         error getCurrentExceptionMsg()
 
-    let qq = modules.mapit(string, it.gen_out_line())
+    let qq = modules.mapit(it.gen_out_line())
     let outline = ", [$#]" % qq.join(", ")
     echo(out_line)
     flushFile(stdout)

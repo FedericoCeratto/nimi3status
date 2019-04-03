@@ -2,12 +2,14 @@
 # Nim i3 status bar - readline with timeout
 #
 
-from posix import Timeval, select, TFdSet, FD_SET, FD_ZERO
+from posix import Timeval, select, TFdSet, FD_SET, FD_ZERO, Time
+from posix import Suseconds
 
 proc timeValFromMilliseconds(timeout: int): Timeval =
-  let seconds = timeout div 1000
-  result.tv_sec = seconds.int32
-  result.tv_usec = ((timeout - seconds * 1000) * 1000).int32
+  var seconds = timeout div 1000
+  result.tv_sec = seconds.Time
+  result.tv_usec = ((timeout - seconds * 1000) * 1000).Suseconds
+
 
 proc readLine*(f: File, timeout:int): TaintedString =
   result = ""
@@ -17,7 +19,7 @@ proc readLine*(f: File, timeout:int): TaintedString =
   var tv = timeValFromMilliseconds(timeout)
   var data_available = int(select(cint(f.getFileHandle+1), addr(rd), nil, nil, addr(tv)))
   if data_available == 0:
-    return nil
+    return ""
 
   # read until newline
   while true:
