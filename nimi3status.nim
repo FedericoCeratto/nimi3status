@@ -137,9 +137,7 @@ proc play_sound(self: Pomodoro, snd_name: string) =
     process_pool.add startProcess(aplay_binpath, ".", ["-N", self.conf[snd_name].str])
 
 method update(self: Pomodoro) =
-  var
-    remaining_time: float
-    barblock = ""
+  var barblock = ""
 
   case self.status:
   of PomodoroStatus.WaitingToStart:
