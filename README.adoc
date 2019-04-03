@@ -12,7 +12,6 @@ image:https://raw.githubusercontent.com/FedericoCeratto/nimi3status/screenshot/s
 Installation:
 
     $ sudo apt-get install nim
-    $ # intall nimble
     $ nimble install nimi3status
 
 Copy and edit example.conf.json - then configure your ~/.config/i3/config:

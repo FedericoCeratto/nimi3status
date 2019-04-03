@@ -34,6 +34,7 @@ const
 type ProcessPool = seq[Process]
 
 var process_pool: ProcessPool = @[]
+var fg = ""
 
 proc remove_zombie_processes() =
   keepIf process_pool,
@@ -118,7 +119,7 @@ type Pomodoro = ref object of Module
     conf: JsonNode
 
 proc newPomodoro(c: JsonNode): Pomodoro =
-  let self = Pomodoro(name: "pomodoro", color: "", full_text: "")
+  let self = Pomodoro(name: "pomodoro",  color: fg, full_text: "")
   self.conf = c
   self.status = PomodoroStatus.WaitingToStart
   self.time_window = 60 * 25
@@ -193,7 +194,7 @@ proc handle_click(self: Pomodoro, button: MouseButton) =
 type Clock = ref object of Module
 
 proc newClock(c: JsonNode): Clock =
-  Clock(name: "clock", color: "")
+  Clock(name: "clock",  color: fg)
 
 method update(self: Clock) =
   self.full_text = now().format("yyyy-MM-dd HH:mm:ss")
@@ -215,7 +216,7 @@ type FreeDiskSpace = ref object of Module
   symbol: string
 
 proc newFreeDiskSpace(c: JsonNode): FreeDiskSpace =
-  result = FreeDiskSpace(name: c["name"].str, color: "", full_text: "")
+  result = FreeDiskSpace(name: c["name"].str,  color: fg, full_text: "")
   result.path = c["path"].str
   result.symbol = c["symbol"].str
 
@@ -234,7 +235,7 @@ type CPU = ref object of Module
   load_values: seq[int]
 
 proc newCPU(c: JsonNode): CPU =
-  result = CPU(name: c["name"].str, color: "", full_text: "")
+  result = CPU(name: c["name"].str,  color: fg, full_text: "")
   result.symbol = c["symbol"].str
   result.color = col(0, 0, 40)
 
@@ -272,7 +273,7 @@ type Battery = ref object of Module
   path: string
 
 proc newBattery(c: JsonNode): Battery =
-  result = Battery(name: c["name"].str, color: "", full_text: "")
+  result = Battery(name: c["name"].str,  color: fg, full_text: "")
   result.path = c["path"].str
 
 method update(self: Battery) =
@@ -291,7 +292,7 @@ type Temperature = ref object of Module
   path: string
 
 proc newTemperature(c: JsonNode): Temperature =
-  result = Temperature(name: c["name"].str, color: "", full_text: "")
+  result = Temperature(name: c["name"].str,  color: fg, full_text: "")
   result.path = c["path"].str
 
 method update(self: Temperature) =
@@ -305,7 +306,7 @@ type PlayerControl = ref object of Module
   volume_tick: int
 
 proc newPlayerControl(c: JsonNode): PlayerControl =
-  result = PlayerControl(name: c["name"].str, color: "", full_text: "▸")
+  result = PlayerControl(name: c["name"].str,  color: fg, full_text: "▸")
   result.volume_tick = c["volume_tick"].getInt
 
 method update(self: PlayerControl) =
@@ -360,7 +361,7 @@ method process_input(self: PlayerControl, event: JsonNode) =
 type Network = ref object of Module
 
 proc newNetwork(name="network"): Network =
-  result = Network(name: name, color: "", full_text: "", cache_duration:5)
+  result = Network(name: name,  color: fg, full_text: "", cache_duration:5)
 
 method update(self: Network) =
   if not self.should_update:
@@ -382,7 +383,7 @@ method update(self: Network) =
 type Memory = ref object of Module
 
 proc newMemory(): Memory =
-  result = Memory(name: "memory", color: "", full_text: "")
+  result = Memory(name: "memory",  color: fg, full_text: "")
 
 method update(self: Memory) =
   var total, used: int
@@ -403,7 +404,7 @@ method update(self: Memory) =
 type Swap = ref object of Module
 
 proc newSwap(c: JsonNode): Swap =
-  result = Swap(name: c["name"].str, color: "", full_text: c["label"].str)
+  result = Swap(name: c["name"].str,  color: fg, full_text: c["label"].str)
 
 method update(self: Swap) =
   var total, used, free: int
@@ -428,7 +429,7 @@ type FileCheck = ref object of Module
   when_not_found: string
 
 proc newFileCheck(path, when_found, when_not_found: string): FileCheck =
-  result = FileCheck(name: "filecheck", color: "", full_text: "", when_found: when_found,
+  result = FileCheck(name: "filecheck",  color: fg, full_text: "", when_found: when_found,
     when_not_found: when_not_found, path: path)
 
 method update(self: FileCheck) =
@@ -448,7 +449,7 @@ type NetworkTraffic = ref object of Module
 
 proc newNetworkTraffic(c: JsonNode): NetworkTraffic =
   ## Interface status, blink on network traffic
-  result = NetworkTraffic(name: c["name"].str, color: "", full_text: "",
+  result = NetworkTraffic(name: c["name"].str,  color: fg, full_text: "",
     when_found: c["when_up"].str,
     when_not_found: c["when_down"].str,
     iface_name: c["iface"].str,
@@ -497,7 +498,7 @@ type RedShift = ref object of Module
   temperature: float
 
 proc newRedShift(c: JsonNode): RedShift =
-  result = RedShift(name: c["name"].str, color: "", full_text: "RS")
+  result = RedShift(name: c["name"].str,  color: fg, full_text: "RS")
   result.brightness = 0.7
   result.temperature = 5000
   result.tick = 0.025
@@ -564,6 +565,7 @@ when isMainModule:
       nil
 
 
+  fg = col(0, 0, 0)
   info("starting")
   echo("""{"click_events": true, "version": 1}""")
   echo("[[]")
