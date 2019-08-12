@@ -9,6 +9,7 @@ import asyncdispatch,
   logging,
   marshal,
   os,
+  strformat,
   strutils,
   times
 
@@ -117,6 +118,7 @@ type Pomodoro = ref object of Module
     status: PomodoroStatus
     end_sound_fname: string
     conf: JsonNode
+    end_barblock, break_barblock: string
 
 proc newPomodoro(c: JsonNode): Pomodoro =
   let self = Pomodoro(name: "pomodoro",  color: fg, full_text: "")
@@ -124,8 +126,12 @@ proc newPomodoro(c: JsonNode): Pomodoro =
   self.status = PomodoroStatus.WaitingToStart
   self.time_window = 60 * 25
   self.endtime = 0
-  self.num_progress_bars = 5
+  self.num_progress_bars = 10
   self.end_sound_fname = self.conf["end_sound_fname"].str
+  var spaces = repeat(" ", (self.num_progress_bars - 3) div 2)
+  self.end_barblock = fmt"[{spaces}end{spaces}]"
+  spaces = repeat(" ", (self.num_progress_bars - 5) div 2)
+  self.break_barblock = fmt"[{spaces}break{spaces}]"
   return self
 
 proc notify(self: Pomodoro, msg_name: string) =
@@ -142,14 +148,14 @@ method update(self: Pomodoro) =
 
   case self.status:
   of PomodoroStatus.WaitingToStart:
-    barblock = "[-----]"
+    barblock = "[" & repeat("-", self.num_progress_bars) &  "]"
     self.color = ""
 
   of PomodoroStatus.Running:
     let remaining_time = self.endtime - epochTime()
     if remaining_time <= 0:
       self.status = PomodoroStatus.EndOfRun
-      barblock = "[ end ]"
+      barblock = self.end_barblock
       self.color = ""
       self.notify("end_notification_msg")
       self.play_sound("end_sound_fname")
@@ -157,15 +163,15 @@ method update(self: Pomodoro) =
     else:
       let remaining_time = self.endtime - epochTime()
       let perc = remaining_time / self.time_window.float
-      barblock = generate_bar(perc, 5)
+      barblock = generate_bar(perc, self.num_progress_bars)
       self.color = col(150, 50, 50)
 
   of PomodoroStatus.EndOfRun:
-    barblock = "[ end ]"
+    barblock = self.end_barblock
     self.color = ""
 
   of PomodoroStatus.inBreak:
-    barblock = "break"
+    barblock = self.break_barblock
     self.color = "#770000"
 
   self.full_text = "$#" % barblock
